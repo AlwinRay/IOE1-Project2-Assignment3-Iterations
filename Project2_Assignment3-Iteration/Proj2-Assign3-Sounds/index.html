@@ -1,0 +1,65 @@
+<!--I wanted to recreate the old default microsoft media music player back from the 
+    windows XP and Windows Vista. Have the background image 
+    (source: https://windows-cdn.softpedia.com/screenshots/Microsoft-Windows-Media-Player-11_2.png)
+    from that player and put the audio visuaalizers like the ranges and the ellipse will represent
+    the level of the sound of what the mic is picking up.
+    From github p5js audio visualization examples https://js6450.github.io/audio-viz/index.html -->
+    <html>
+        <head>
+          <!-- Added the p5sound libraries in the libraries -->
+          <script src="../lib/p5.min.js"></script>
+            <script src="../lib/p5.sound.js"></script>
+
+            <script>   
+                let mic;
+                let fft;
+            
+                function setup() {
+                  bg = loadImage('../img/oldplayer.png'); //the background image
+                  createCanvas(windowWidth, windowHeight);
+            
+                  mic = new p5.AudioIn();
+                  mic.start();
+            
+                  fft = new p5.FFT();
+                  fft.setInput(mic);
+            
+                  noStroke();
+                }
+                  function draw() {
+                    //background(0,5);
+                    background(bg);
+                    //randomizing the colors for the shapeColor
+                    r = random(255);
+                    g = random(255);
+                    b = random(255);
+                    a = random(250); //add some range to the colour
+                    
+                    let shapeColor = color(r,g,b,a);
+                
+                    let level = mic.getLevel(); //To get the level of the microphone
+                    let spectrum = fft.analyze(); //To get the frequency and to find the range
+
+                    fill(255);
+                    for (let i = 0; i < spectrum.length; i++) {
+                        let xPos = map(i, 0, spectrum.length/3, 0, width); //divided the spectrum.length so it will fill the screen more
+                        let yPos = map(spectrum[i], 0, 255, height/1.3, 0);
+                
+                        //Still utilizing the random colors to better show the different ranges
+                        fill(shapeColor);
+                        rect(xPos, yPos, 5, 5); //Felt that its more appropriate if its rectangle rather than circles. 
+                        //line(xPos, yPos, xPos, yPos);
+                        noStroke();
+                
+                        //Added 2 ellipse for the level and place it abouve the range
+                        //accidentally made a face and stuck with it. 
+                        fill(shapeColor);
+                        ellipse(width / 1.5, height / 4, level * width, level * width);
+                        ellipse(width / 3.5, height / 4, level * width / 2, level * width / 2);
+                    }
+                }
+            </script>
+        </head>
+        <body>
+        </body>
+    </html>

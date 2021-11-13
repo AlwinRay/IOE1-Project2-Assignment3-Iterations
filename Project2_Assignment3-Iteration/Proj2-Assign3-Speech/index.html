@@ -1,0 +1,88 @@
+<!-- From the start I wanted to do something like this, after seeing the example 
+     05continuousrecognition.html, since that one can draw, I wonder if  I can also
+     draw different shapes and while researching on how to do it, I stumble on the
+     example. From p5js speech example https://editor.p5js.org/Tiri/sketches/cAGGZxMTR -->
+<html>
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+	<script src="../lib/p5.speech.js"></script>
+	<script>   
+
+let listening = new p5.SpeechRec();
+
+listening.onResult = showResult;
+listening.start(true,true);
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background(230);
+
+  //Wanted to add an instruction on the screen so users will know what to do,
+  //starting the page will just be a blank screen without the instruction.
+  textSize(25);
+		textAlign(LEFT);
+		text("To Draw Shapes: Circle, Square, Triangle, Rectangle, Line, Clear", 25, 25);
+
+}
+
+function draw() {
+  //randomizing the colors for the shapeColor
+    r = random(255);
+    g = random(255);
+    b = random(255);
+    a = random(250); //add some range to the colour
+}
+
+
+function showResult(){
+  let shape=listening.resultString;
+  console.log(shape);
+  
+  let xPos=random(width);
+  let yPos=random(height);
+  let size=random(250); //Changed the value from the example from 20-150 to just a range til 250
+  let shapeColor=color(r,g,b,a); //this is where the random rgba from the draw function
+  
+
+  if(shape=="Rectangle" || shape=="rectangle"){
+    fill(shapeColor);
+    rect(xPos,yPos,random(size),random(size)); 
+  }
+  else if(shape=="Triangle"|| shape=="triangle"){
+    fill(shapeColor);
+    triangle(xPos, yPos, 
+             xPos+random(-size,size),yPos+random(-size,size),
+             xPos+random(-size,size),yPos+random(-size,size));
+    
+  }
+  else if(shape==="Circle"|| shape==="circle"){
+    fill(shapeColor);
+    ellipse(xPos,yPos,size,size);  
+    
+  }
+  else if(shape=="Square" || shape=="square"){
+    fill(shapeColor);
+    rect(xPos,yPos,size,size);  
+    
+  }
+  else if(shape=="line"){
+    stroke(shapeColor);
+    strokeWeight(3);
+    line(xPos,yPos,xPos+random(-size,size),yPos+random(-size,size));
+  }
+  noStroke();
+  
+  //added a clear function if the user wants to clear the canvas
+  var mostrecentword = listening.resultString.split(' ').pop();
+  if(mostrecentword.indexOf("clear")!==-1) { 
+    background(255); 
+    }
+	console.log(mostrecentword);
+}
+
+</script>
+</head>
+<body>
+</body>
+</html>
